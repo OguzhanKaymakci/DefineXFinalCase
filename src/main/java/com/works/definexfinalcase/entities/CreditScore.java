@@ -19,4 +19,5 @@ public class CreditScore {
     private String creditLimit;
     private Long salary;
     private Long guarantee;
+    private String phone;
 }

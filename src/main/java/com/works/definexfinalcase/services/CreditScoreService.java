@@ -1,5 +1,9 @@
 package com.works.definexfinalcase.services;
 
+import com.twilio.Twilio;
+import com.twilio.rest.api.v2010.account.Message;
+import com.twilio.twiml.messaging.Body;
+import com.twilio.type.PhoneNumber;
 import com.works.definexfinalcase.entities.CreditScore;
 import com.works.definexfinalcase.entities.Customer;
 import com.works.definexfinalcase.repositories.CreditScoreRepository;
@@ -38,6 +42,7 @@ public class CreditScoreService {
         creditScore.setCreditScoreResult((String) session.getAttribute("creditScore"));
         creditScore.setSalary((Long) session.getAttribute("salary"));
         creditScore.setGuarantee((Long) session.getAttribute("guarantee"));
+        creditScore.setPhone((String) session.getAttribute("phone"));
 
         Long guarantee=creditScore.getGuarantee();
         int creditScoreNum= Integer.parseInt(creditScore.getCreditScoreResult());
@@ -71,40 +76,91 @@ atanır. (Kredi Sonucu:Onay) Eğer teminat vermişse teminat bedelinin yüzde 20
             Optional<Customer> optionalCustomerSalary = (Optional<Customer>) session.getAttribute("guarantee");
 
             if (optionalCustomerSalary.isPresent()){
-                creditScore.setCreditLimit("Credit Result Accepted: "+ (20000 + guarantee*0.2+"Turkish Liras"));
+                creditScore.setCreditLimit("Credit Result Accepted: "+ (20000 + guarantee*0.2) +" Turkish Liras");
                 CreditScore cdS= creditScoreRepository.save(creditScore);
                 hm.put(REnum.STATUS,true);
                 hm.put(REnum.RESULT,creditScore);
             }else {
-                creditScore.setCreditLimit("Credit Result Accepted: "+ 20000 +"Turkish Liras");
+                creditScore.setCreditLimit("Credit Result Accepted: "+ 20000 +" Turkish Liras");
+                CreditScore cdS= creditScoreRepository.save(creditScore);
+                hm.put(REnum.STATUS,true);
+                hm.put(REnum.RESULT,creditScore);
+
+
+            }
+           /* Kredi skoru 500 puan ile 1000 puan arasında ise ve aylık geliri 10.000 TL’nin üstünde ise kullanıcının kredi başvurusu onaylanır ve kullanıcıya AYLIK GELİR BİLGİSİ *
+            KREDİ LİMİT ÇARPANI/2 kadar limit atanır. (Kredi Sonucu:Onay) Eğer teminat vermişse teminat bedelinin yüzde 25 i kadar tutar kredi limitine eklenir.*/
+        }else if (creditScoreNum>=500 && creditScoreNum<1000 && salary>10000){
+            Optional<Customer> optionalCustomerSalary = (Optional<Customer>) session.getAttribute("guarantee");
+
+            if (optionalCustomerSalary.isPresent()){
+                creditScore.setCreditLimit("Credit Result Accepted: "+ (((salary*4)/2)+guarantee*0.25) +"Turkish Liras");
+                CreditScore cdS= creditScoreRepository.save(creditScore);
+                hm.put(REnum.STATUS,true);
+                hm.put(REnum.RESULT,creditScore);
+            }else {
+                creditScore.setCreditLimit("Credit Result Accepted: "+ ((salary*4)/2) +"Turkish Liras");
                 CreditScore cdS= creditScoreRepository.save(creditScore);
                 hm.put(REnum.STATUS,true);
                 hm.put(REnum.RESULT,creditScore);
             }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         }
+
+        /*Kredi skoru 1000 puana eşit veya üzerinde ise kullanıcıya AYLIK GELİR BİLGİSİ * KREDİ LİMİT ÇARPANI kadar
+        limit atanır. (Kredi Sonucu: Onay) Eğer teminat vermişse teminat bedelinin yüzde 50 si kadar tutar kredi limitine eklenir.*/
+
+        else if (creditScoreNum>=1000 ){
+            Optional<Customer> optionalCustomerSalary = (Optional<Customer>) session.getAttribute("guarantee");
+
+            if (optionalCustomerSalary.isPresent()){
+                creditScore.setCreditLimit("Credit Result Accepted: "+ (((salary*4))+guarantee*0.5) +"Turkish Liras");
+                CreditScore cdS= creditScoreRepository.save(creditScore);
+                hm.put(REnum.STATUS,true);
+                hm.put(REnum.RESULT,creditScore);
+            }else {
+                creditScore.setCreditLimit("Credit Result Accepted: "+ ((salary*4)) +"Turkish Liras");
+                CreditScore cdS= creditScoreRepository.save(creditScore);
+                hm.put(REnum.STATUS,true);
+                hm.put(REnum.RESULT,creditScore);
+            }
+        }
+
+        //Daha sonrasında ise ilgili telefon numarasına bilgilendirme SMS’i gönderilir
+            final String ACCOUNT_SID = "ACf6487795366c938237bd918adc87681d";
+            final String AUTH_TOKEN = "8018a68aa47c09d1df99256d63972fc4";
+            final String FROM_PHONE_NUMBER = "+12762658677";
+
+
+            Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
+
+            Message message = Message.creator(
+                            new com.twilio.type.PhoneNumber(creditScore.getPhone()),  // To number
+                            new PhoneNumber(FROM_PHONE_NUMBER),  // From number
+                            "Your loan application has been received and approved.")           // SMS body
+                    .create();
+
+            System.out.println(message.getSid());
+
+/*            String message= creditScore.getName() + creditScore.getSurName() + creditScore.getCreditScoreResult()+ creditScore.getCreditLimit().toString() + creditScore.getGuarantee().toString();
+            Message smsMessage = new Message.Builder()
+                    .body(new Body(message))
+                    .from(new com.twilio.type.PhoneNumber("YOUR_TWILIO_PHONE_NUMBER"))
+                    .to(new com.twilio.type.PhoneNumber(toNumber))
+                    .build();
+
+            try {
+                Message response = twilioRestClient.messages().create(smsMessage);
+                System.out.println("SMS sent to " + response.getTo() + " with SID " + response.getSid());
+            } catch (TwilioRestException e) {
+                System.out.println("Failed to send SMS: " + e.getMessage());
+            }*/
+
         }catch (Exception e){
-            hm.put(REnum.RESULT,false);
+            hm.put(REnum.STATUS,false);
             hm.put(REnum.MESSAGE,e.getMessage());
             return new ResponseEntity<>(hm, HttpStatus.NOT_ACCEPTABLE);
         }
 
         return new ResponseEntity<>(hm, HttpStatus.OK);
-    }
-}
+    }}
+
