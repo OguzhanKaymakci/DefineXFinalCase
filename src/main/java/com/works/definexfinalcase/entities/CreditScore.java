@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.util.Date;
 
 @Data
 @Entity
@@ -20,4 +21,6 @@ public class CreditScore {
     private Long salary;
     private Long guarantee;
     private String phone;
+    private Date birthDate;
+    private String idNo;
 }

@@ -2,12 +2,13 @@ package com.works.definexfinalcase.services;
 
 import com.twilio.Twilio;
 import com.twilio.rest.api.v2010.account.Message;
-import com.twilio.twiml.messaging.Body;
 import com.twilio.type.PhoneNumber;
 import com.works.definexfinalcase.entities.CreditScore;
 import com.works.definexfinalcase.entities.Customer;
 import com.works.definexfinalcase.repositories.CreditScoreRepository;
+import com.works.definexfinalcase.repositories.CustomerRepository;
 import com.works.definexfinalcase.utils.REnum;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -15,9 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @Transactional
@@ -32,10 +31,12 @@ public class CreditScoreService {
         this.request = request;
     }
 
-    public ResponseEntity<Map<REnum,Object>> results(CreditScore creditScore){
+    public ResponseEntity<Map<REnum,Object>> results(HttpSession session){
         Map<REnum,Object> hm = new LinkedHashMap<>();
+        CreditScore creditScore= new CreditScore();
         //sistemde olan kullanıcının datalarını almak için
-        HttpSession session = request.getSession();
+        session = request.getSession();
+        // HttpSession session = request.getSession();
         //String username = (String) session.getAttribute("username");
         creditScore.setName((String) session.getAttribute("firstName"));
         creditScore.setSurName((String) session.getAttribute("lastName"));
@@ -43,6 +44,8 @@ public class CreditScoreService {
         creditScore.setSalary((Long) session.getAttribute("salary"));
         creditScore.setGuarantee((Long) session.getAttribute("guarantee"));
         creditScore.setPhone((String) session.getAttribute("phone"));
+        creditScore.setBirthDate((Date) session.getAttribute("birthday"));
+        creditScore.setIdNo((String) session.getAttribute("idNo"));
 
         Long guarantee=creditScore.getGuarantee();
         int creditScoreNum= Integer.parseInt(creditScore.getCreditScoreResult());
@@ -162,5 +165,32 @@ atanır. (Kredi Sonucu:Onay) Eğer teminat vermişse teminat bedelinin yüzde 20
         }
 
         return new ResponseEntity<>(hm, HttpStatus.OK);
-    }}
+    }
+
+
+    public ResponseEntity<Map<REnum,Object>> listByIdAndBirthdate(@Lazy String id,@Lazy Date date){
+        HashMap<REnum,Object> hm= new LinkedHashMap<>();
+
+        try {
+            Optional<CreditScore> creditScoreOptional= creditScoreRepository.findByBirthDateAndIdNo(id,date);
+            if (creditScoreOptional.isPresent()){
+                hm.put(REnum.STATUS,true);
+                hm.put(REnum.RESULT,creditScoreRepository.findByIdNo(id));
+            }
+
+        }catch (Exception e){
+            hm.put(REnum.STATUS,false);
+            hm.put(REnum.RESULT,e.getMessage());
+            return new ResponseEntity<>(hm,HttpStatus.NOT_ACCEPTABLE);
+        }
+
+        return new ResponseEntity<>(hm,HttpStatus.OK);
+
+
+
+    }
+
+
+
+}
 

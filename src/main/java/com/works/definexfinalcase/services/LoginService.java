@@ -5,6 +5,7 @@ import com.works.definexfinalcase.entities.Admin;
 import com.works.definexfinalcase.entities.Customer;
 import com.works.definexfinalcase.entities.Login;
 import com.works.definexfinalcase.utils.REnum;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -34,7 +35,7 @@ public class LoginService {
         this.httpSession = httpSession;
     }
 
-    public ResponseEntity auth (Login login){
+    public ResponseEntity auth (@Lazy Login login){
         Map<REnum,Object> hm = new LinkedHashMap<>();
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
