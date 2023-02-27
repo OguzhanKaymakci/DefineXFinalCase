@@ -29,16 +29,13 @@ public class SecurityCong extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests() //giriş rolleri ile çalış
-                .antMatchers("/customer/register","/auth").permitAll() //hangi servis hangi rolle çalışcak emrini veriyoruz.
+                .antMatchers("/customer/register").permitAll() //hangi servis hangi rolle çalışcak emrini veriyoruz.
                 .antMatchers("/admin/register").permitAll() //hangi servis hangi rolle çalışcak emrini veriyoruz.
-                .antMatchers("/basket/**").hasRole("customer")
-                .antMatchers("/order/**").hasRole("customer")
-                .antMatchers("/category/list").hasAnyRole("customer")
-                .antMatchers("/category/save","/category/delete","/category/update").hasAnyRole("admin")
-                .antMatchers("/product/save","/product/delete","product/update","/product/listbyid","/product/search").hasRole("admin")
-                .antMatchers("/admin/change/password").hasRole("admin")
-                .antMatchers("/customer/change/password","/product/list","/product/listbyid","/product/search").hasRole("customer")
-                .and()       //tanımlar dışında config var onları da koy
+                .antMatchers("/customer/list","/customer/update","/customer/delete").hasRole("admin")
+                .antMatchers("/definexSystem/auth").permitAll()
+                .antMatchers("/credit/apply").hasRole("customer")
+                .antMatchers("/credit/listByIdAndBirthdate").hasRole("admin")
+                .and()
                 .csrf().disable()
                 .formLogin().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);  //jwt nin üreteceği sessionun oluşturulmasına izin veriyor

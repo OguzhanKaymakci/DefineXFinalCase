@@ -1,10 +1,8 @@
 package com.works.definexfinalcase.entities;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.format.annotation.DateTimeFormat;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDate;
@@ -19,8 +17,8 @@ public class CreditScore {
     private String name;
     private String surName;
     private String creditScoreResult;
-    @NotBlank(message = "Not blank")
-    @Length(message = "max:50", max = 50)
+    /*    @NotBlank(message = "Not blank")
+        @Length(message = "max:50", max = 50)*/
     private String creditLimit;
     @NotBlank(message = "Not blank")
     @Length(message = "max:50", max = 50)

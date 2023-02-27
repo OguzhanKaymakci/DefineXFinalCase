@@ -13,7 +13,7 @@ import java.util.Optional;
 public interface CreditScoreRepository extends JpaRepository<CreditScore, Long> {
     Optional<CreditScore> findByGuarantee(Long guarantee);
 
-    Optional<CreditScore> findByBirthDateAndIdNo(String idNo, LocalDate birthDate );
-    List<CreditScore> findByIdNo(String idNo );
+    Optional<CreditScore> findByBirthDateAndIdNo(Long idNo, LocalDate birthDate );
+    List<CreditScore> findByIdNo(Long idNo );
 
 }

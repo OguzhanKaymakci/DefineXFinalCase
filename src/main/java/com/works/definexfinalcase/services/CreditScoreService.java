@@ -154,7 +154,8 @@ atanır. (Kredi Sonucu:Onay) Eğer teminat vermişse teminat bedelinin yüzde 20
             final String ACCOUNT_SID = "ACf6487795366c938237bd918adc87681d";
             final String AUTH_TOKEN = "8018a68aa47c09d1df99256d63972fc4";
             final String FROM_PHONE_NUMBER = "+12762658677";
-            final String TO_PHONE_NUMBER = String.valueOf(creditScore.getPhone());
+            /*final String TO_PHONE_NUMBER = String.valueOf(creditScore.getPhone());*/
+            final String TO_PHONE_NUMBER = "+905366584771";
 
 
 
@@ -192,7 +193,7 @@ atanır. (Kredi Sonucu:Onay) Eğer teminat vermişse teminat bedelinin yüzde 20
     }
 
 
-    public ResponseEntity<Map<REnum,Object>> listByIdAndBirthdate(@Lazy String id,@Lazy LocalDate date){
+    public ResponseEntity<Map<REnum,Object>> listByIdAndBirthdate(@Lazy Long id,@Lazy LocalDate date){
         HashMap<REnum,Object> hm= new LinkedHashMap<>();
 
         try {

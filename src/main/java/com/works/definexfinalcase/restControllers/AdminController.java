@@ -22,7 +22,6 @@ public class AdminController {
 
     @PostMapping("/register")
     public ResponseEntity register(@Valid @RequestBody Admin admin){
-        System.out.println("/************/");
         return adminService.register(admin);
 
     }

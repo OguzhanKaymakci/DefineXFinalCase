@@ -27,19 +27,26 @@ public class CustomerService {
     public ResponseEntity register(Customer jwtCustomer){
         Map<REnum,Object> hm= new LinkedHashMap<>();
         Optional<Customer> optionalJwtCustomer= customerRepository.findByEmailEqualsIgnoreCase(jwtCustomer.getEmail());
-        if (!optionalJwtCustomer.isPresent()){
-            jwtCustomer.setPassword(encoder().encode(jwtCustomer.getPassword()));
-            Customer customer= customerRepository.save(jwtCustomer);
-            hm.put(REnum.MESSAGE,"login successful");
-            hm.put(REnum.STATUS,true);
-            hm.put(REnum.RESULT,customer);
-            return new ResponseEntity<>(hm, HttpStatus.OK);
-        }else {
-            System.out.println("-333");
+        try {
+            if (!optionalJwtCustomer.isPresent()){
+                jwtCustomer.setPassword(encoder().encode(jwtCustomer.getPassword()));
+                Customer customer= customerRepository.save(jwtCustomer);
+                hm.put(REnum.MESSAGE,"login successful");
+                hm.put(REnum.STATUS,true);
+                hm.put(REnum.RESULT,customer);
+                return new ResponseEntity<>(hm, HttpStatus.OK);
+            }else {
+                hm.put(REnum.STATUS,false);
+                hm.put(REnum.MESSAGE,"customer has already registered ");
+                return new ResponseEntity<>(hm, HttpStatus.BAD_REQUEST);
+            }
+        }catch (Exception ex){
             hm.put(REnum.STATUS,false);
-            hm.put(REnum.MESSAGE,"customer has already registered ");
+            hm.put(REnum.MESSAGE,ex.getMessage());
             return new ResponseEntity<>(hm, HttpStatus.BAD_REQUEST);
         }
+
+
     }
 
 

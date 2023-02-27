@@ -1,7 +1,6 @@
 package com.works.definexfinalcase.services;
 
-import com.sun.org.slf4j.internal.Logger;
-import com.sun.org.slf4j.internal.LoggerFactory;
+
 import com.works.definexfinalcase.entities.Admin;
 import com.works.definexfinalcase.entities.Customer;
 import com.works.definexfinalcase.entities.Role;

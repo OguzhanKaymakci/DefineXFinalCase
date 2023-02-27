@@ -96,11 +96,11 @@
             <version>9.0.0</version>
             <scope>compile</scope>
         </dependency>
-<!--        <dependency>
-            <groupId>com.messagemedia.sdk</groupId>
-            <artifactId>messages</artifactId>
-            <version>2.0.0</version>
-        </dependency>-->
+        <!--        <dependency>
+                    <groupId>com.messagemedia.sdk</groupId>
+                    <artifactId>messages</artifactId>
+                    <version>2.0.0</version>
+                </dependency>-->
 
         <!-- https://mvnrepository.com/artifact/log4j/log4j -->
         <dependency>
@@ -122,19 +122,32 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/junit/junit -->
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.12</version>
-            <scope>test</scope>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
+            <version>2.9.2</version>
         </dependency>
 
         <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-spring-cloud-config-client</artifactId>
-            <version>2.14.1</version>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
+            <version>2.9.2</version>
         </dependency>
+
+
+        <!--        &lt;!&ndash; https://mvnrepository.com/artifact/junit/junit &ndash;&gt;
+                <dependency>
+                    <groupId>junit</groupId>
+                    <artifactId>junit</artifactId>
+                    <version>4.12</version>
+                    <scope>test</scope>
+                </dependency>
+
+                <dependency>
+                    <groupId>org.apache.logging.log4j</groupId>
+                    <artifactId>log4j-spring-cloud-config-client</artifactId>
+                    <version>2.14.1</version>
+                </dependency>-->
 
 
 

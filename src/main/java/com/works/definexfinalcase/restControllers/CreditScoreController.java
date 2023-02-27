@@ -26,15 +26,17 @@ public class CreditScoreController {
     }
 
     @PostMapping("/apply")
-    public ResponseEntity apply(CreditScore creditScore){
+    public ResponseEntity apply(@Valid @RequestBody CreditScore creditScore){
         /*HttpSession session = request.getSession();*/
         return creditScoreService.results(creditScore);
 
     }
 
-    @GetMapping("listByIdAndBirthdate")
-    public ResponseEntity listByIdAndBirthdate(@Valid @RequestParam String id, @RequestParam LocalDate date){
-        return creditScoreService.listByIdAndBirthdate(id,date);
+    @PutMapping("listByIdAndBirthdate")
+    public ResponseEntity listByIdAndBirthdate(@RequestParam String id, @RequestParam String date){
+        Long uptId= Long.valueOf(id);
+        LocalDate lclDate= LocalDate.parse(date);
+        return creditScoreService.listByIdAndBirthdate(uptId,lclDate);
     }
 
 }
