@@ -4,10 +4,10 @@ import com.twilio.Twilio;
 import com.twilio.rest.api.v2010.account.Message;
 import com.twilio.type.PhoneNumber;
 import com.works.definexfinalcase.entities.CreditScore;
-import com.works.definexfinalcase.entities.Customer;
 import com.works.definexfinalcase.repositories.CreditScoreRepository;
-import com.works.definexfinalcase.repositories.CustomerRepository;
 import com.works.definexfinalcase.utils.REnum;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,12 +15,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
+import java.time.LocalDate;
 import java.util.*;
 
 @Service
 @Transactional
 public class CreditScoreService {
+
+    private static final Logger logger = LogManager.getLogger(CreditScoreService.class);
 
     final CreditScoreRepository creditScoreRepository;
     final HttpServletRequest request;
@@ -31,10 +33,14 @@ public class CreditScoreService {
         this.request = request;
     }
 
-    public ResponseEntity<Map<REnum,Object>> results(HttpSession session){
+    public ResponseEntity<Map<REnum,Object>> results(CreditScore creditScore){
+        logger.debug("Debug message");
+        logger.info("save to database");
+        logger.warn("Warn message");
+        logger.error("Error message");
+        logger.fatal("Fatal message");
         Map<REnum,Object> hm = new LinkedHashMap<>();
-        CreditScore creditScore= new CreditScore();
-        //sistemde olan kullanıcının datalarını almak için
+      /*  //sistemde olan kullanıcının datalarını almak için
         session = request.getSession();
         // HttpSession session = request.getSession();
         //String username = (String) session.getAttribute("username");
@@ -46,24 +52,31 @@ public class CreditScoreService {
         creditScore.setPhone((String) session.getAttribute("phone"));
         creditScore.setBirthDate((Date) session.getAttribute("birthday"));
         creditScore.setIdNo((String) session.getAttribute("idNo"));
+*/
 
-        Long guarantee=creditScore.getGuarantee();
+       // int creditScoreNum= Integer.parseInt(creditScore.getCreditScoreResult());
         int creditScoreNum= Integer.parseInt(creditScore.getCreditScoreResult());
-        Long salary = creditScore.getSalary();
+        int salary= Integer.parseInt(creditScore.getSalary());
+        /*Long salary = creditScore.getSalary();*/
         try {
             //Kredi skoru 500’ün altında ise kullanıcı reddedilir. (Kredi sonucu: Red)
         if (creditScoreNum<500){
             creditScore.setCreditScoreResult("Credit Result: declined");
+            logger.info("save to database");
             CreditScore cdS= creditScoreRepository.save(creditScore);
             hm.put(REnum.STATUS,true);
             hm.put(REnum.RESULT,creditScore);
             /*Kredi skoru 500 puan ile 1000 puan arasında ise ve aylık geliri 5000 TL’nin altında ise
 Kullanıcının kredi başvurusu onaylanır ve kullanıcıya 10.000 TL limit atanır. (Kredi Sonucu: Onay). Eğer teminat vermişse teminat bedelinin yüzde 10 u kadar tutar kredi limitine eklenir.*/
         }else if (creditScoreNum>=500 && creditScoreNum<1000 && salary<5000){
-            Optional<Customer> optionalCustomerSalary = (Optional<Customer>) session.getAttribute("guarantee");
+           // Optional<Customer> optionalCustomerSalary = (Optional<Customer>) session.getAttribute("guarantee");
+            Optional<CreditScore> creditScoreOptionalGuarantee = creditScoreRepository.findByGuarantee(creditScore.getGuarantee());
 
-            if (optionalCustomerSalary.isPresent()){
+
+            if (creditScoreOptionalGuarantee.isPresent()){
+                Long guarantee=creditScore.getGuarantee();
                 creditScore.setCreditLimit("Credit Result Accepted: "+ (10000 + guarantee*0.1+"Turkish Liras"));
+                logger.info("save to database");
                 CreditScore cdS= creditScoreRepository.save(creditScore);
                 hm.put(REnum.STATUS,true);
                 hm.put(REnum.RESULT,creditScore);
@@ -76,15 +89,18 @@ Kullanıcının kredi başvurusu onaylanır ve kullanıcıya 10.000 TL limit ata
 /*Kredi skoru 500 puan ile 1000 puan arasında ise ve aylık geliri 5000 TL ile 10.000TL arasında ise kullanıcının kredi başvurusu onaylanır ve kullanıcıya 20.000 TL limit
 atanır. (Kredi Sonucu:Onay) Eğer teminat vermişse teminat bedelinin yüzde 20 si kadar tutar kredi limitine eklenir.*/
         }else if (creditScoreNum>=500 && creditScoreNum<1000 && salary>=5000 && salary<10000){
-            Optional<Customer> optionalCustomerSalary = (Optional<Customer>) session.getAttribute("guarantee");
-
-            if (optionalCustomerSalary.isPresent()){
+           /* Optional<Customer> optionalCustomerSalary = (Optional<Customer>) session.getAttribute("guarantee");*/
+            Optional<CreditScore> creditScoreOptionalGuarantee = creditScoreRepository.findByGuarantee(creditScore.getGuarantee());
+            if (creditScoreOptionalGuarantee.isPresent()){
+                Long guarantee=creditScore.getGuarantee();
                 creditScore.setCreditLimit("Credit Result Accepted: "+ (20000 + guarantee*0.2) +" Turkish Liras");
+                logger.info("save to database");
                 CreditScore cdS= creditScoreRepository.save(creditScore);
                 hm.put(REnum.STATUS,true);
                 hm.put(REnum.RESULT,creditScore);
             }else {
                 creditScore.setCreditLimit("Credit Result Accepted: "+ 20000 +" Turkish Liras");
+                logger.info("save to database");
                 CreditScore cdS= creditScoreRepository.save(creditScore);
                 hm.put(REnum.STATUS,true);
                 hm.put(REnum.RESULT,creditScore);
@@ -94,15 +110,18 @@ atanır. (Kredi Sonucu:Onay) Eğer teminat vermişse teminat bedelinin yüzde 20
            /* Kredi skoru 500 puan ile 1000 puan arasında ise ve aylık geliri 10.000 TL’nin üstünde ise kullanıcının kredi başvurusu onaylanır ve kullanıcıya AYLIK GELİR BİLGİSİ *
             KREDİ LİMİT ÇARPANI/2 kadar limit atanır. (Kredi Sonucu:Onay) Eğer teminat vermişse teminat bedelinin yüzde 25 i kadar tutar kredi limitine eklenir.*/
         }else if (creditScoreNum>=500 && creditScoreNum<1000 && salary>10000){
-            Optional<Customer> optionalCustomerSalary = (Optional<Customer>) session.getAttribute("guarantee");
-
-            if (optionalCustomerSalary.isPresent()){
+            /*Optional<Customer> optionalCustomerSalary = (Optional<Customer>) session.getAttribute("guarantee");*/
+            Optional<CreditScore> creditScoreOptionalGuarantee = creditScoreRepository.findByGuarantee(creditScore.getGuarantee());
+            if (creditScoreOptionalGuarantee.isPresent()){
+                Long guarantee=creditScore.getGuarantee();
                 creditScore.setCreditLimit("Credit Result Accepted: "+ (((salary*4)/2)+guarantee*0.25) +"Turkish Liras");
+                logger.info("save to database");
                 CreditScore cdS= creditScoreRepository.save(creditScore);
                 hm.put(REnum.STATUS,true);
                 hm.put(REnum.RESULT,creditScore);
             }else {
                 creditScore.setCreditLimit("Credit Result Accepted: "+ ((salary*4)/2) +"Turkish Liras");
+                logger.info("save to database");
                 CreditScore cdS= creditScoreRepository.save(creditScore);
                 hm.put(REnum.STATUS,true);
                 hm.put(REnum.RESULT,creditScore);
@@ -113,15 +132,18 @@ atanır. (Kredi Sonucu:Onay) Eğer teminat vermişse teminat bedelinin yüzde 20
         limit atanır. (Kredi Sonucu: Onay) Eğer teminat vermişse teminat bedelinin yüzde 50 si kadar tutar kredi limitine eklenir.*/
 
         else if (creditScoreNum>=1000 ){
-            Optional<Customer> optionalCustomerSalary = (Optional<Customer>) session.getAttribute("guarantee");
-
-            if (optionalCustomerSalary.isPresent()){
+            /*Optional<Customer> optionalCustomerSalary = (Optional<Customer>) session.getAttribute("guarantee");*/
+            Optional<CreditScore> creditScoreOptionalGuarantee = creditScoreRepository.findByGuarantee(creditScore.getGuarantee());
+            if (creditScoreOptionalGuarantee.isPresent()){
+                Long guarantee=creditScore.getGuarantee();
                 creditScore.setCreditLimit("Credit Result Accepted: "+ (((salary*4))+guarantee*0.5) +"Turkish Liras");
+                logger.info("save to database");
                 CreditScore cdS= creditScoreRepository.save(creditScore);
                 hm.put(REnum.STATUS,true);
                 hm.put(REnum.RESULT,creditScore);
             }else {
                 creditScore.setCreditLimit("Credit Result Accepted: "+ ((salary*4)) +"Turkish Liras");
+                logger.info("save to database");
                 CreditScore cdS= creditScoreRepository.save(creditScore);
                 hm.put(REnum.STATUS,true);
                 hm.put(REnum.RESULT,creditScore);
@@ -132,12 +154,14 @@ atanır. (Kredi Sonucu:Onay) Eğer teminat vermişse teminat bedelinin yüzde 20
             final String ACCOUNT_SID = "ACf6487795366c938237bd918adc87681d";
             final String AUTH_TOKEN = "8018a68aa47c09d1df99256d63972fc4";
             final String FROM_PHONE_NUMBER = "+12762658677";
+            final String TO_PHONE_NUMBER = String.valueOf(creditScore.getPhone());
+
 
 
             Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
 
             Message message = Message.creator(
-                            new com.twilio.type.PhoneNumber(creditScore.getPhone()),  // To number
+                            new com.twilio.type.PhoneNumber(TO_PHONE_NUMBER),  // To number
                             new PhoneNumber(FROM_PHONE_NUMBER),  // From number
                             "Your loan application has been received and approved.")           // SMS body
                     .create();
@@ -168,19 +192,21 @@ atanır. (Kredi Sonucu:Onay) Eğer teminat vermişse teminat bedelinin yüzde 20
     }
 
 
-    public ResponseEntity<Map<REnum,Object>> listByIdAndBirthdate(@Lazy String id,@Lazy Date date){
+    public ResponseEntity<Map<REnum,Object>> listByIdAndBirthdate(@Lazy String id,@Lazy LocalDate date){
         HashMap<REnum,Object> hm= new LinkedHashMap<>();
 
         try {
             Optional<CreditScore> creditScoreOptional= creditScoreRepository.findByBirthDateAndIdNo(id,date);
             if (creditScoreOptional.isPresent()){
                 hm.put(REnum.STATUS,true);
+                logger.info("list by Id No");
                 hm.put(REnum.RESULT,creditScoreRepository.findByIdNo(id));
             }
 
         }catch (Exception e){
             hm.put(REnum.STATUS,false);
             hm.put(REnum.RESULT,e.getMessage());
+            logger.error("exception case");
             return new ResponseEntity<>(hm,HttpStatus.NOT_ACCEPTABLE);
         }
 

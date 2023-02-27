@@ -1,5 +1,7 @@
 package com.works.definexfinalcase.services;
 
+import com.sun.org.slf4j.internal.Logger;
+import com.sun.org.slf4j.internal.LoggerFactory;
 import com.works.definexfinalcase.entities.Admin;
 import com.works.definexfinalcase.entities.Customer;
 import com.works.definexfinalcase.entities.Role;
@@ -25,6 +27,7 @@ import java.util.*;
 @Service
 @Transactional
 public class AdminService implements UserDetailsService {
+
     final AdminRepository adminRepository;
     final CustomerRepository customerRepository;
     final HttpSession httpSession;
@@ -72,6 +75,7 @@ public class AdminService implements UserDetailsService {
         Optional<Customer> optionalCustomer = customerRepository.findByEmailEqualsIgnoreCase(username);
         Optional<Admin> optionalAdmin = adminRepository.findByEmailEqualsIgnoreCase(username);
         if (optionalCustomer.isPresent() && !optionalAdmin.isPresent()) {
+
             Customer c = optionalCustomer.get();
             UserDetails userDetails = new User(
                     c.getEmail(),
@@ -82,6 +86,7 @@ public class AdminService implements UserDetailsService {
                     true,
                     roles(c.getRoles())
             );
+
             httpSession.setAttribute("customer",c);
             return userDetails;
         }else if (!optionalCustomer.isPresent() && optionalAdmin.isPresent()){

@@ -15,6 +15,6 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
         /*Gerçekleştirilmiş bir kredi başvurusu sadece kimlik numarası ve doğum tarihi bilgisi ile sorgulanabilir.
      Doğum tarihi ve kimlik bilgisi eşleşmezse sorgulanamamalıdır. */
 
-    @Query("select c from Customer c where c.idNo = ?1 and c.birthday = ?2")
-    Customer findByIdNoAndBirthday(String idNo, Date birthday);
+
+/*    Customer findByIdNoAndBirthday(String idNo, Date birthday);*/
 }

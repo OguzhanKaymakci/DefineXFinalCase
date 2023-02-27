@@ -23,7 +23,6 @@ public class CustomerController {
     @PostMapping("/register")
     public ResponseEntity register(@Valid @RequestBody Customer customer){
         return customerService.register(customer);
-
     }
 
     @GetMapping("/list")

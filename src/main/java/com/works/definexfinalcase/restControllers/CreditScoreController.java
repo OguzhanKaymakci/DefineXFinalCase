@@ -1,5 +1,6 @@
 package com.works.definexfinalcase.restControllers;
 
+import com.works.definexfinalcase.entities.CreditScore;
 import com.works.definexfinalcase.entities.Customer;
 import com.works.definexfinalcase.services.CreditScoreService;
 import org.springframework.http.ResponseEntity;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.time.LocalDate;
 import java.util.Date;
 
 @RestController
@@ -23,15 +25,15 @@ public class CreditScoreController {
         this.creditScoreService = creditScoreService;
     }
 
-    @GetMapping("/apply")
-    public ResponseEntity apply(HttpServletRequest request){
-        HttpSession session = request.getSession();
-        return creditScoreService.results(session);
+    @PostMapping("/apply")
+    public ResponseEntity apply(CreditScore creditScore){
+        /*HttpSession session = request.getSession();*/
+        return creditScoreService.results(creditScore);
 
     }
 
     @GetMapping("listByIdAndBirthdate")
-    public ResponseEntity listByIdAndBirthdate(@Valid @RequestParam String id, @RequestParam Date date){
+    public ResponseEntity listByIdAndBirthdate(@Valid @RequestParam String id, @RequestParam LocalDate date){
         return creditScoreService.listByIdAndBirthdate(id,date);
     }
 
