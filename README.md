@@ -24,8 +24,8 @@ relevant person is obtained and the credit result is shown to the user according
 
 <p>
 <p>  Database Diagram  </p>
- <a href="https://github.com/OguzhanKaymakci/Spring-Rest-Ecommerce/blob/main/images/12.PNG" target="_blank">
-<img src="https://github.com/OguzhanKaymakci/Spring-Rest-Ecommerce/blob/main/images/12.PNG" width="650" style="max-width:100%;"></a>
+ <a href="https://github.com/OguzhanKaymakci/DefineXFinalCase/blob/main/images/img12.PNG" target="_blank">
+<img src="https://github.com/OguzhanKaymakci/DefineXFinalCase/blob/main/images/img12.PNG" width="650" style="max-width:100%;"></a>
 </p>
 
 <p>
