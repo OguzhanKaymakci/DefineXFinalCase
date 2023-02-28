@@ -36,10 +36,8 @@ relevant person is obtained and the credit result is shown to the user according
  <a href="https://github.com/OguzhanKaymakci/DefineXFinalCase/blob/main/images/img2.PNG" target="_blank">
 <img src="https://github.com/OguzhanKaymakci/DefineXFinalCase/blob/main/images/img2.PNG" width="650" style="max-width:100%;"></a>
 
-
  <a href="https://github.com/OguzhanKaymakci/DefineXFinalCase/blob/main/images/img3.PNG" target="_blank">
 <img src="https://github.com/OguzhanKaymakci/DefineXFinalCase/blob/main/images/img3.PNG" width="650" style="max-width:100%;"></a>
-
 
  <a href="https://github.com/OguzhanKaymakci/DefineXFinalCase/blob/main/images/img4.PNG" target="_blank">
 <img src="https://github.com/OguzhanKaymakci/DefineXFinalCase/blob/main/images/img4.PNG" width="650" style="max-width:100%;"></a>
@@ -63,7 +61,16 @@ relevant person is obtained and the credit result is shown to the user according
 <img src="https://github.com/OguzhanKaymakci/DefineXFinalCase/blob/main/images/img10.PNG" width="650" style="max-width:100%;"></a>
 
 
+## Project Swagger Image
 
+ <a href="https://github.com/OguzhanKaymakci/DefineXFinalCase/blob/main/images/img13.PNG" target="_blank">
+<img src="https://github.com/OguzhanKaymakci/DefineXFinalCase/blob/main/images/img13.PNG" width="650" style="max-width:100%;"></a>
+
+ <a href="https://github.com/OguzhanKaymakci/DefineXFinalCase/blob/main/images/img14.PNG" target="_blank">
+<img src="https://github.com/OguzhanKaymakci/DefineXFinalCase/blob/main/images/img14.PNG" width="650" style="max-width:100%;"></a>
+
+ <a href="https://github.com/OguzhanKaymakci/DefineXFinalCase/blob/main/images/img15.PNG" target="_blank">
+<img src="https://github.com/OguzhanKaymakci/DefineXFinalCase/blob/main/images/img15.PNG" width="650" style="max-width:100%;"></a>
 
 
 </p>
