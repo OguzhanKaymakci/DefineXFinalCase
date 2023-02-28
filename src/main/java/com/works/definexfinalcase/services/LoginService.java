@@ -35,7 +35,7 @@ public class LoginService {
         this.httpSession = httpSession;
     }
 
-    public ResponseEntity auth (@Lazy Login login){
+    public ResponseEntity auth (Login login){
         Map<REnum,Object> hm = new LinkedHashMap<>();
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(

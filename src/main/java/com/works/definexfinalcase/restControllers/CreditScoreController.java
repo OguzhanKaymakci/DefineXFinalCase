@@ -32,11 +32,11 @@ public class CreditScoreController {
 
     }
 
-    @PutMapping("listByIdAndBirthdate")
-    public ResponseEntity listByIdAndBirthdate(@RequestParam String id, @RequestParam String date){
+    @PostMapping("listByIdAndBirthdate")
+    public ResponseEntity listByIdAndBirthdate(@RequestParam Long id, @RequestParam LocalDate date){
         Long uptId= Long.valueOf(id);
-        LocalDate lclDate= LocalDate.parse(date);
-        return creditScoreService.listByIdAndBirthdate(uptId,lclDate);
+        //LocalDate lclDate= LocalDate.parse(date);
+        return creditScoreService.listByIdAndBirthdate(id,date);
     }
 
 }
