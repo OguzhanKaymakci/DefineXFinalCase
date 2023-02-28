@@ -156,6 +156,7 @@ atanır. (Kredi Sonucu:Onay) Eğer teminat vermişse teminat bedelinin yüzde 20
             final String FROM_PHONE_NUMBER = "+12762658677";
             /*final String TO_PHONE_NUMBER = String.valueOf(creditScore.getPhone());*/
             final String TO_PHONE_NUMBER = "+905366584771";
+            logger.info("send sms to phone");
 
 
 
@@ -184,6 +185,7 @@ atanır. (Kredi Sonucu:Onay) Eğer teminat vermişse teminat bedelinin yüzde 20
             }*/
 
         }catch (Exception e){
+            logger.error("throw exception");
             hm.put(REnum.STATUS,false);
             hm.put(REnum.MESSAGE,e.getMessage());
             return new ResponseEntity<>(hm, HttpStatus.NOT_ACCEPTABLE);

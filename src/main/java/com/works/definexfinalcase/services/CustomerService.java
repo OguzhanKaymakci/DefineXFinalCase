@@ -4,6 +4,8 @@ import com.works.definexfinalcase.entities.Customer;
 import com.works.definexfinalcase.entities.Role;
 import com.works.definexfinalcase.repositories.CustomerRepository;
 import com.works.definexfinalcase.utils.REnum;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.GrantedAuthority;
@@ -18,6 +20,7 @@ import java.util.*;
 @Service
 @Transactional
 public class CustomerService {
+    private static final Logger logger = LogManager.getLogger(CreditScoreService.class);
     final CustomerRepository customerRepository;
 
     public CustomerService(CustomerRepository customerRepository) {
@@ -41,6 +44,7 @@ public class CustomerService {
                 return new ResponseEntity<>(hm, HttpStatus.BAD_REQUEST);
             }
         }catch (Exception ex){
+            logger.error("register exception");
             hm.put(REnum.STATUS,false);
             hm.put(REnum.MESSAGE,ex.getMessage());
             return new ResponseEntity<>(hm, HttpStatus.BAD_REQUEST);

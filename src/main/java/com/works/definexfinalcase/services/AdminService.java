@@ -7,6 +7,8 @@ import com.works.definexfinalcase.entities.Role;
 import com.works.definexfinalcase.repositories.AdminRepository;
 import com.works.definexfinalcase.repositories.CustomerRepository;
 import com.works.definexfinalcase.utils.REnum;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.GrantedAuthority;
@@ -26,6 +28,7 @@ import java.util.*;
 @Service
 @Transactional
 public class AdminService implements UserDetailsService {
+    private static final Logger logger = LogManager.getLogger(CreditScoreService.class);
 
     final AdminRepository adminRepository;
     final CustomerRepository customerRepository;
@@ -38,6 +41,7 @@ public class AdminService implements UserDetailsService {
     }
 
     public ResponseEntity<Map<REnum,Object>> register(Admin admin){
+        logger.info("register is active");
         Map<REnum,Object> hm= new LinkedHashMap<>();
         Optional<Admin> optionalAdmin= adminRepository.findByEmailEqualsIgnoreCase(admin.getEmail());
         if (!optionalAdmin.isPresent()){
@@ -71,6 +75,7 @@ public class AdminService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        logger.info("user created session");
         Optional<Customer> optionalCustomer = customerRepository.findByEmailEqualsIgnoreCase(username);
         Optional<Admin> optionalAdmin = adminRepository.findByEmailEqualsIgnoreCase(username);
         if (optionalCustomer.isPresent() && !optionalAdmin.isPresent()) {

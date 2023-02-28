@@ -5,6 +5,8 @@ import com.works.definexfinalcase.entities.Admin;
 import com.works.definexfinalcase.entities.Customer;
 import com.works.definexfinalcase.entities.Login;
 import com.works.definexfinalcase.utils.REnum;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +23,7 @@ import java.util.Map;
 @Service
 @Transactional
 public class LoginService {
+    private static final Logger logger = LogManager.getLogger(CreditScoreService.class);
 
     final AuthenticationManager authenticationManager;
     final AdminService adminService;
@@ -36,11 +39,13 @@ public class LoginService {
     }
 
     public ResponseEntity auth (Login login){
+        logger.info("which role is active info");
         Map<REnum,Object> hm = new LinkedHashMap<>();
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                     login.getUsername(),login.getPassword()));
             UserDetails userDetails=adminService.loadUserByUsername(login.getUsername());
+            logger.info("create token from user details");
             String jwt= jwtUtil.generateToken(userDetails);
             Customer customer= (Customer) httpSession.getAttribute("customer");
             Admin admin= (Admin) httpSession.getAttribute("admin");
@@ -60,6 +65,7 @@ public class LoginService {
             }
 
         }catch (Exception ex){
+            logger.error("Throw exception in service");
             hm.put(REnum.STATUS,false);
             hm.put(REnum.ERROR,ex.getMessage());
             return new ResponseEntity(hm,HttpStatus.NOT_ACCEPTABLE);
